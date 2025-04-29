@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Recovery Agent Form</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Global styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+    }
+
+    h3 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /* Navbar styles */
+    .navbar {
+      background-color: #007BFF;
+      padding: 15px;
+      text-align: center;
+      font-size: 18px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .navbar a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .navbar a:hover {
+      text-decoration: underline;
+    }
+
+    /* Form Container */
+    .form-container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Input and Button Styles */
+    .input-field,
+    select {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 18px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus,
+    select:focus {
+      border-color: #007BFF;
+      outline: none;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Search and Results Styles */
+    .result-item {
+      padding: 12px;
+      margin-bottom: 12px;
+      background-color: #f9f9f9;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .result-item:hover {
+      background-color: #e9e9e9;
+    }
+
+    #searchResults {
+      margin-top: 20px;
+    }
+
+    .search-container {
+      margin-bottom: 20px;
+    }
+
+    .input-search {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-search:focus {
+      border-color: #007BFF;
+      outline: none;
+    }
+
+    /* Footer styles */
+    footer {
+      background-color: #007BFF;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="bg-white p-4 shadow-md flex justify-between items-center">
+    <div class="text-2xl font-bold text-blue-600 hover:text-blue-700 transition duration-300">LoanCo</div>
+    <div class="space-x-6">
+      <a href="index.html" class="text-blue-600 hover:text-blue-800 font-medium transition duration-300">Home</a>
+      <a href="dashboard.html" class="text-blue-600 hover:text-blue-800 font-medium transition duration-300">Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="form-container">
+    <!-- Search Section -->
+    <div class="search-container">
+      <input type="text" id="searchInput" class="input-search" placeholder="Search by Customer Name..." oninput="searchCustomer()">
+    </div>
+
+    <!-- Search Results -->
+    <div id="searchResults">
+      <!-- Customer names will appear here after searching -->
+    </div>
+
+    <!-- Form to Update Loan Details (appears after selecting a customer) -->
+    <div id="updateForm" style="display: none; margin-top: 20px;">
+        <h3>Update Loan Status</h3>
+        <div>
+          <label for="customerId">Customer ID:</label>
+          <input type="text" id="customerId" class="input-field" readonly>
+        </div>
+        <div>
+          <label for="loanAmount">Loan Amount:</label>
+          <input type="text" id="loanAmount" class="input-field" readonly>
+        </div>
+        <div>
+          <label for="loanStatus">Loan Status:</label>
+          <input type="text" id="loanStatus" class="input-field" readonly>
+        </div>
+        <div>
+          <label for="amountPaid">Amount Paid:</label>
+          <input type="number" id="amountPaid" class="input-field" placeholder="Enter paid amount">
+        </div>
+        <div>
+          <label for="paymentDate">Payment Date:</label>
+          <input type="date" id="paymentDate" class="input-field">
+        </div>
+        <div>
+          <label for="paymentMode">Payment Mode:</label>
+          <select id="paymentMode" class="input-field">
+            <option value="Cash">Cash</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Cheque">Cheque</option>
+            <option value="Online Payment">Online Payment</option>
+          </select>
+        </div>
+        <button type="button" class="btn" onclick="updateLoanStatus()">Update Loan Status</button>
+      </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white text-center text-gray-500 text-sm py-4 shadow-inner mt-auto">
+    Done with ❤️ by <span class="font-bold text-blue-600">AYLABS</span>
+  </footer>
+
+  <script>
+    // Sample customer data (this should be fetched from your database)
+    const customers = [
+      { id: '20230401001', name: 'Praveen R', loanAmount: 10000, loanStatus: 'Pending' },
+      { id: '20230402002', name: 'Suhas J', loanAmount: 20000, loanStatus: 'Recovered' },
+      { id: '20230403003', name: 'Prajwal L H ', loanAmount: 15000, loanStatus: 'Pending' },
+      { id: '20230404004', name: 'Akshay B', loanAmount: 30000, loanStatus: 'Pending' }
+    ];
+
+    // Function to search customer by name and show search results
+    function searchCustomer() {
+      const searchName = document.getElementById("searchInput").value.toLowerCase();
+      const filteredCustomers = customers.filter(c => c.name.toLowerCase().includes(searchName));
+      
+      const searchResults = document.getElementById("searchResults");
+      searchResults.innerHTML = ''; // Clear previous search results
+      
+      console.log("Filtered Customers:", filteredCustomers); // Debug log to check the filtered customers
+
+      if (filteredCustomers.length > 0) {
+        filteredCustomers.forEach(customer => {
+          const resultItem = document.createElement('div');
+          resultItem.textContent = customer.name;
+          resultItem.classList.add('result-item');
+          resultItem.onclick = function() { fillForm(customer) };
+          searchResults.appendChild(resultItem);
+        });
+      } else {
+        searchResults.innerHTML = 'No customers found.';
+      }
+    }
+
+    // Function to fill the form with selected customer's details
+    function fillForm(customer) {
+      // Get the form elements
+      const customerIdInput = document.getElementById("customerId");
+      const loanAmountInput = document.getElementById("loanAmount");
+      const loanStatusInput = document.getElementById("loanStatus");
+
+      // Check if the form elements exist
+      if (customerIdInput && loanAmountInput && loanStatusInput) {
+        customerIdInput.value = customer.id;
+        loanAmountInput.value = customer.loanAmount;
+        loanStatusInput.value = customer.loanStatus;
+        document.getElementById("updateForm").style.display = 'block'; // Show the form to update details
+      } else {
+        console.error('Form elements not found');
+      }
+    }
+
+    // Function to update the loan status
+    function updateLoanStatus() {
+      const customerId = document.getElementById("customerId").value;
+      const amountPaid = document.getElementById("amountPaid").value;
+      const paymentDate = document.getElementById("paymentDate").value;
+      const paymentMode = document.getElementById("paymentMode").value;
+      
+      if (!amountPaid || !paymentDate || !paymentMode) {
+        Swal.fire({
+          title: 'All fields are required!',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+
+      // Simulating successful update of loan status
+      Swal.fire({
+        title: 'Loan status updated successfully!',
+        text: `Loan ID: ${customerId}, Amount Paid: $${amountPaid}, Payment Date: ${paymentDate}, Mode: ${paymentMode}`,
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <nav class="bg-white p-4 shadow flex justify-between">
+    <div class="text-2xl font-bold">LoanCo</div>
+    <div class="space-x-4">
+      <a href="index.html" class="text-blue-600 hover:underline">Home</a>
+    </div>
+  </nav>
+
+  <section class="p-8">
+    <h2 class="text-3xl font-bold mb-6 text-center">Dashboard</h2>
+  
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-10">
+      <div class="bg-white p-6 rounded shadow text-center">
+        <div class="text-xl font-bold">120</div>
+        <div class="text-gray-500">Customers</div>
+      </div>
+      <div class="bg-white p-6 rounded shadow text-center">
+        <div class="text-xl font-bold">85</div>
+        <div class="text-gray-500">Loans Given</div>
+      </div>
+      <div class="bg-white p-6 rounded shadow text-center">
+        <div class="text-xl font-bold">65</div>
+        <div class="text-gray-500">Recovered</div>
+      </div>
+      <div class="bg-white p-6 rounded shadow text-center">
+        <div class="text-xl font-bold">20</div>
+        <div class="text-gray-500">Pending</div>
+      </div>
+      <div class="bg-white p-6 rounded shadow text-center">
+        <div class="text-xl font-bold">₹8,50,000</div>
+        <div class="text-gray-500">Amount Disbursed</div>
+      </div>
+      <div class="bg-white p-6 rounded shadow text-center">
+        <div class="text-xl font-bold">₹2,00,000</div>
+        <div class="text-gray-500">Amount Pending</div>
+      </div>
+    </div>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white p-4 rounded shadow flex justify-center">
+          <canvas id="loanStatusChart" class="w-64 h-64"></canvas>
+        </div>
+        <div class="bg-white p-4 rounded shadow flex justify-center">
+          <canvas id="loanTrendChart" class="w-64 h-64"></canvas>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded shadow flex justify-center mb-8">
+        <canvas id="amountChart" class="w-64 h-64"></canvas>
+      </div>
+  </section>
+
+  <script>
+    const amountChart = new Chart(document.getElementById('amountChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Disbursed', 'Pending'],
+    datasets: [{
+      label: 'Amount (₹)',
+      data: [850000, 200000], // Example values in rupees
+      backgroundColor: ['#3B82F6', '#FBBF24'],
+      borderRadius: 5
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      datalabels: {
+        color: '#111',
+        anchor: 'end',
+        align: 'top',
+        font: {
+          weight: 'bold'
+        },
+        formatter: (value) => '₹' + value.toLocaleString()
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  },
+  plugins: [ChartDataLabels]
+});
+const loanStatusChart = new Chart(document.getElementById('loanStatusChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Recovered', 'Pending'],
+    datasets: [{
+      label: 'Loan Status',
+      data: [65, 20],
+      backgroundColor: ['#34D399', '#F87171'],
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      datalabels: {
+        color: '#111',
+        font: {
+          weight: 'bold',
+          size: 14,
+        },
+        formatter: (value, context) => {
+          return value; // Simply shows 65, 20 as values
+        }
+      },
+      legend: {
+        position: 'bottom',
+      }
+    }
+  },
+  plugins: [ChartDataLabels] // Important: Enable plugin here
+});
+    const loanTrendChart = new Chart(document.getElementById('loanTrendChart'), {
+      type: 'line',
+      data: {
+        labels: ['January', 'February', 'March', 'April', 'May'],
+        datasets: [{
+          label: 'Loans Given',
+          data: [5, 15, 30, 20, 15],
+          borderColor: '#3B82F6',
+          fill: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      }
+    });
+  </script>
+</body>
+</html>
